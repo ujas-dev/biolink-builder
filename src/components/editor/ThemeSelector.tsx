@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
 import type { Theme } from '@/lib/types'
 import { Check } from 'lucide-react'
+
+// Remove the unused supabase import
+// import { supabase } from '@/lib/supabase'
 
 interface Props {
   currentTheme: string
@@ -12,7 +14,6 @@ export default function ThemeSelector({ currentTheme, onSelectTheme }: Props) {
   const [themes, setThemes] = useState<Theme[]>([])
 
   useEffect(() => {
-    // For now, use built-in themes
     setThemes(builtInThemes)
   }, [])
 
@@ -90,66 +91,6 @@ const builtInThemes: Theme[] = [
     fonts: {
       heading: 'Inter',
       body: 'Inter',
-    },
-    borderRadius: '0.75rem',
-  },
-  {
-    id: 'gradient',
-    name: 'Gradient Pop',
-    colors: {
-      primary: '#ec4899',
-      secondary: '#f43f5e',
-      background: '#fdf2f8',
-      text: '#1f2937',
-    },
-    fonts: {
-      heading: 'Poppins',
-      body: 'Inter',
-    },
-    borderRadius: '1rem',
-  },
-  {
-    id: 'minimal',
-    name: 'Minimal',
-    colors: {
-      primary: '#000000',
-      secondary: '#404040',
-      background: '#ffffff',
-      text: '#000000',
-    },
-    fonts: {
-      heading: 'Space Grotesk',
-      body: 'Inter',
-    },
-    borderRadius: '0.25rem',
-  },
-  {
-    id: 'retro',
-    name: 'Retro Wave',
-    colors: {
-      primary: '#ff006e',
-      secondary: '#8338ec',
-      background: '#240046',
-      text: '#ffffff',
-    },
-    fonts: {
-      heading: 'Orbitron',
-      body: 'Inter',
-    },
-    borderRadius: '0rem',
-  },
-  {
-    id: 'nature',
-    name: 'Nature',
-    colors: {
-      primary: '#10b981',
-      secondary: '#059669',
-      background: '#f0fdf4',
-      text: '#065f46',
-    },
-    fonts: {
-      heading: 'Merriweather',
-      body: 'Open Sans',
     },
     borderRadius: '0.75rem',
   },

@@ -1,10 +1,18 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
 export interface Database {
   public: {
     Tables: {
       profiles: {
         Row: Profile
-        Insert: Omit<Profile, 'id' | 'created_at'>
-        Update: Partial<Omit<Profile, 'id' | 'created_at'>>
+        Insert: Omit<Profile, 'created_at'>
+        Update: Partial<Omit<Profile, 'created_at'>>
       }
       sections: {
         Row: Section
@@ -21,6 +29,20 @@ export interface Database {
         Insert: Omit<RSSSource, 'id'>
         Update: Partial<Omit<RSSSource, 'id'>>
       }
+      link_clicks: {
+        Row: LinkClick
+        Insert: Omit<LinkClick, 'id' | 'clicked_at'>
+        Update: Partial<Omit<LinkClick, 'id' | 'clicked_at'>>
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
     }
   }
 }
@@ -42,7 +64,7 @@ export interface Section {
   profile_id: string
   type: 'links' | 'rss' | 'social' | 'video' | 'contact' | 'newsletter'
   title: string | null
-  config: Record<string, any>
+  config: Json
   layout: 'list' | 'grid' | 'timeline' | 'carousel' | 'bento'
   position: number
   visible: boolean
@@ -81,6 +103,15 @@ export interface RSSItem {
   description: string
   thumbnail: string | null
   author: string | null
+}
+
+export interface LinkClick {
+  id: string
+  link_id: string | null
+  profile_id: string | null
+  clicked_at: string
+  referrer: string | null
+  user_agent: string | null
 }
 
 export interface Theme {

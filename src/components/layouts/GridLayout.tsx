@@ -1,17 +1,19 @@
 import { motion } from 'framer-motion'
 import type { Link, RSSItem } from '@/lib/types'
 import { ExternalLink } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 interface Props {
-  items: (Link | RSSItem)[]
+  items: Link[] | RSSItem[]
   config?: Record<string, any>
 }
 
 export default function GridLayout({ items, config = {} }: Props) {
   const columns = config.columns || 3
 
-  const isLink = (item: any): item is Link => 'section_id' in item
-  const isRSSItem = (item: any): item is RSSItem => 'pubDate' in item
+  const isLink = (item: Link | RSSItem): item is Link => {
+    return 'section_id' in item
+  }
 
   return (
     <div
@@ -29,7 +31,7 @@ export default function GridLayout({ items, config = {} }: Props) {
           className="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden"
         >
           {/* Thumbnail */}
-          {(isLink(item) ? item.thumbnail_url : item.thumbnail) && (
+          {((isLink(item) && item.thumbnail_url) || (!isLink(item) && item.thumbnail)) && (
             <div className="aspect-video w-full overflow-hidden bg-gray-100">
               <img
                 src={isLink(item) ? item.thumbnail_url! : item.thumbnail!}
@@ -44,14 +46,14 @@ export default function GridLayout({ items, config = {} }: Props) {
             <h3 className="font-semibold text-lg mb-2 line-clamp-2">
               {item.title}
             </h3>
-            
+
             {isLink(item) && item.description && (
               <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                 {item.description}
               </p>
             )}
 
-            {isRSSItem(item) && (
+            {!isLink(item) && (
               <p className="text-sm text-gray-500">
                 {new Date(item.pubDate).toLocaleDateString()}
               </p>
@@ -63,10 +65,9 @@ export default function GridLayout({ items, config = {} }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mt-2"
-              onClick={() => {
+              onClick={async () => {
                 if (isLink(item)) {
-                  // Track click
-                  supabase.from('link_clicks').insert({
+                  await supabase.from('link_clicks').insert({
                     link_id: item.id,
                     clicked_at: new Date().toISOString(),
                   })

@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react'
-import type { Section } from '@/lib/types'
+import type { Section, Link } from '@/lib/types'
 import LinkEditor from './LinkEditor'
 import RSSFeedEditor from './RSSFeedEditor'
+import { supabase } from '@/lib/supabase'
 
 interface Props {
   section: Section
@@ -40,7 +41,7 @@ export default function SectionEditor({ section, onUpdate, onDelete }: Props) {
 
         <select
           value={section.layout}
-          onChange={(e) => onUpdate({ layout: e.target.value as any })}
+          onChange={(e) => onUpdate({ layout: e.target.value as Section['layout'] })}
           className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500"
         >
           {layoutOptions.map((option) => (
@@ -110,7 +111,7 @@ export default function SectionEditor({ section, onUpdate, onDelete }: Props) {
 
 // Sub-component for managing links in a section
 function LinksListEditor({ sectionId }: { sectionId: string }) {
-  const [links, setLinks] = useState<any[]>([])
+  const [links, setLinks] = useState<Link[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

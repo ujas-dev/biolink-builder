@@ -135,17 +135,17 @@ function SectionRenderer({ section, links }: { section: Section; links: Link[] }
     return <RSSSectionRenderer section={section} />
   }
 
-  const layoutComponents = {
-    list: ListLayout,
-    grid: GridLayout,
-    timeline: TimelineLayout,
-    carousel: ListLayout, // Simplified for now
-    bento: GridLayout,
+  // Fix: Separate rendering for different layouts
+  if (section.layout === 'timeline') {
+    // Timeline needs RSS items, so skip for links
+    return <ListLayout items={links} />
   }
 
-  const LayoutComponent = layoutComponents[section.layout] || ListLayout
+  if (section.layout === 'grid') {
+    return <GridLayout items={links} config={section.config as Record<string, any>} />
+  }
 
-  return <LayoutComponent items={links} config={section.config} />
+  return <ListLayout items={links} />
 }
 
 function RSSSectionRenderer({ section }: { section: Section }) {
